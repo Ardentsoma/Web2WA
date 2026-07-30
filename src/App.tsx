@@ -15,6 +15,7 @@ import {
   ArrowRight,
   Download,
   Info,
+  Menu,
   X,
   Store,
   Truck,
@@ -110,6 +111,7 @@ Kindly process for shipping and reply with tracking details.`
 export default function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [step, setStep] = useState<'browsing' | 'checkout' | 'success'>('browsing');
   
   // Plugin / Admin settings state (WordPress Backend)
@@ -306,7 +308,8 @@ export default function App() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-6">
+          {/* Desktop: inline buttons */}
+          <div className="hidden md:flex items-center gap-6">
             <button 
               onClick={() => {
                 if (step !== 'browsing') {
@@ -347,8 +350,98 @@ export default function App() {
               )}
             </button>
           </div>
+
+          {/* Mobile: cart + hamburger */}
+          <div className="md:hidden flex items-center gap-3">
+            <button 
+              ref={cartButtonRef}
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-1 text-[#6B6B6B] hover:text-[#111] transition-colors cursor-pointer"
+              aria-label="View Cart"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {cart.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#25D366] text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {cart.reduce((s, i) => s + i.quantity, 0)}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="p-1 text-[#6B6B6B] hover:text-[#111] transition-colors cursor-pointer"
+              aria-label="Open Menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 z-[60] md:hidden"
+              aria-hidden="true"
+            />
+            <motion.div 
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-72 bg-white z-[70] flex flex-col md:hidden"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation Menu"
+            >
+              <div className="p-6 flex justify-end">
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1 text-[#6B6B6B] hover:text-[#111] transition-colors cursor-pointer"
+                  aria-label="Close Menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex-1 px-6 space-y-4">
+                <button 
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    if (step !== 'browsing') {
+                      setStep('browsing');
+                      setTimeout(() => {
+                        const el = document.getElementById('how-to-install');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    } else {
+                      const el = document.getElementById('how-to-install');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm font-semibold text-[#6B6B6B] hover:text-[#111] hover:bg-[#F5F5F5] rounded-lg transition-colors cursor-pointer"
+                >
+                  How To Install
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    downloadPlugin();
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-3 bg-[#111] text-white font-semibold rounded-lg text-sm hover:bg-black transition-colors cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Plugin
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence mode="wait">
         {/* --- STOREFRONT BROWSING SCREEN --- */}
@@ -368,13 +461,21 @@ export default function App() {
                 Allow customers to pay via standard payment gateways, then seamlessly route them 
                 to WhatsApp with pre-filled order details to finalize delivery logistics.
               </p>
-              <button
-                onClick={startCheckout}
-                className="px-8 py-3.5 bg-[#25D366] text-white font-bold rounded-lg text-sm hover:bg-[#1DA851] transition-colors cursor-pointer"
-              >
-                <ArrowRight className="w-4 h-4 inline mr-2" />
-                Test Demo Order
-              </button>
+              <div className="flex flex-col items-center gap-3">
+                <button
+                  onClick={downloadPlugin}
+                  className="px-8 py-3.5 bg-[#25D366] text-white font-bold rounded-lg text-sm hover:bg-[#1DA851] transition-colors cursor-pointer"
+                >
+                  <Download className="w-4 h-4 inline mr-2" />
+                  Download Plugin
+                </button>
+                <button
+                  onClick={startCheckout}
+                  className="text-xs font-semibold text-[#6B6B6B] hover:text-[#111] underline transition-colors cursor-pointer"
+                >
+                  Test Demo Order
+                </button>
+              </div>
             </header>
 
             {/* Products Grid */}
@@ -749,7 +850,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="py-8 px-6">
+      <footer className="border-t border-[#F0F0F0] py-8 px-6">
         <div className="max-w-7xl mx-auto text-center text-xs text-[#6B6B6B] font-medium">
           Developed by Nmesoma N. Sunday
         </div>
