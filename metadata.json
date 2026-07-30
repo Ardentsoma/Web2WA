@@ -1,0 +1,6 @@
+{
+  "name": "Web2WA: WhatsApp Order Bridge",
+  "description": "A WordPress plugin and demo that bridges WooCommerce orders directly to WhatsApp for finalization. Ideal for local businesses and social commerce.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
