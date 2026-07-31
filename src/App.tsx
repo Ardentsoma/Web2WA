@@ -277,7 +277,10 @@ export default function App() {
 
   const downloadPlugin = async () => {
     try {
-      const response = await fetch('/web2wa-plugin.zip');
+      const response = await fetch('/api/download');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -287,7 +290,7 @@ export default function App() {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-      notify("Plugin ZIP v2.2 downloaded!");
+      notify("Plugin ZIP downloaded!");
     } catch (err) {
       console.error(err);
       notify("Error downloading plugin ZIP");
