@@ -263,12 +263,12 @@ function web2wa_post_payment_redirect( $order_id ) {
     if ( empty( $phone ) ) return;
 
     $message = web2wa_generate_whatsapp_message( $order );
-    $wa_url = "https://wa.me/" . preg_replace( '/[^0-9]/', '', $phone ) . "?text=" . urlencode( $message );
+    $wa_url = "https://wa.me/" . preg_replace( '/[^0-9]/', '', $phone ) . "?text=" . rawurlencode( $message );
 
     echo '<div class="web2wa-success-box" style="margin: 25px 0; padding: 25px; border: 2px dashed #25D366; border-radius: 12px; text-align: center; background: #ffffff;">';
     echo '<h3 style="color: #25D366; margin-top: 0; font-size: 1.4em;">✅ ' . esc_html__( 'Payment Received!', 'web2wa' ) . '</h3>';
     echo '<p style="font-size: 1.05em; color: #555;">' . esc_html__( 'Click below to send your receipt and coordinate delivery logistics via WhatsApp.', 'web2wa' ) . '</p>';
-    echo '<a href="' . esc_url( $wa_url ) . '" target="_blank" rel="noopener noreferrer" style="background-color: #25D366; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; font-size: 1.1em; box-shadow: 0 4px 15px rgba(37,211,102,0.3); transition: all 0.2s ease;">' . esc_html__( 'Chat with Logistics Details', 'web2wa' ) . '</a>';
+    echo '<a href="' . esc_attr( $wa_url ) . '" target="_blank" rel="noopener noreferrer" style="background-color: #25D366; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; font-size: 1.1em; box-shadow: 0 4px 15px rgba(37,211,102,0.3); transition: all 0.2s ease;">' . esc_html__( 'Chat with Logistics Details', 'web2wa' ) . '</a>';
     echo '</div>';
 }
 

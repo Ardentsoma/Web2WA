@@ -256,7 +256,7 @@ export default function App() {
     Object.keys(replacements).forEach(key => {
       result = result.replaceAll(key, replacements[key]);
     });
-    return result;
+    return result.replace(/\r\n|\r/g, '\n');
   };
 
   const checkoutOnWhatsApp = () => {
