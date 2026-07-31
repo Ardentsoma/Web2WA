@@ -40,7 +40,8 @@ export function createTelegramNotifier(config: TelegramConfig): Notifier {
         body: JSON.stringify({ chat_id: config.chatId, text: buildMessage(info) }),
       });
       if (!res.ok) {
-        throw new Error(`Telegram API HTTP ${res.status}`);
+        const body = await res.text().catch(() => '');
+        throw new Error(`Telegram API HTTP ${res.status}${body ? `: ${body}` : ''}`);
       }
     },
   };
