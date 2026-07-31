@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/download.ts": {
-      "includeFiles": "public/web2wa-plugin.zip,public/web2wa-plugin.php"
+      "includeFiles": "public/{web2wa-plugin.zip,web2wa-plugin.php}"
     }
   },
   "rewrites": [
