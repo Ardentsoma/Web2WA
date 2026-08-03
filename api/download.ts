@@ -13,10 +13,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const payload = await buildDownloadPayload(req.headers);
+    await analytics.logDownload(payload.entry, getClientIp(req.headers));
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', `attachment; filename="${payload.filename}"`);
     res.send(payload.buffer);
-    await analytics.logDownload(payload.entry, getClientIp(req.headers));
   } catch (err) {
     if (!res.headersSent) {
       const isNotFound = err instanceof PluginNotFoundError;
